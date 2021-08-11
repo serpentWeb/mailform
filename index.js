@@ -71,7 +71,4 @@ class MainController {
 
 app.use(cors());
 app.use(express.json());
-app.listen(port, () =>
-  console.log(`Example app listening at http://localhost:${port}`)
-);
 app.get("/sendEmail", MainController.sendEmail);
