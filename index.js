@@ -8,23 +8,6 @@ const port = 3000;
 const https = require('https');
 const fs = require('fs');
 
-var key = fs.readFileSync(__dirname + '/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
-var options = {
-  key: key,
-  cert: cert
-};
-
-app.get('/', (req, res) => {
-   res.send('Now using https..');
-});
-
-var server = https.createServer(options, app);
-
-server.listen(port, () => {
-  console.log("server starting on port : " + port)
-});
-
 class MainController {
   static async sendEmail(req, res) {
     const { name, phoneNumber } = req.query;
@@ -68,7 +51,21 @@ class MainController {
     }
   }
 }
+var options = {
+  key: key,
+  cert: cert
+};
+var server = https.createServer(options, app);
+var key = fs.readFileSync(__dirname + '/selfsigned.key');
+var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
 
+
+server.listen(port, () => {
+  console.log("server starting on port : " + port)
+});
+app.get('/', (req, res) => {
+  res.send('Now using https..');
+});
 app.use(cors());
 app.use(express.json());
 app.get("/sendEmail", MainController.sendEmail);
