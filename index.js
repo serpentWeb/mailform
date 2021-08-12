@@ -4,9 +4,15 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const port = 8080;
-
+var http = require('http');
 const https = require('https');
 const fs = require('fs');
+var key = fs.readFileSync(__dirname + '/selfsigned.key', 'utf-8');
+var cert = fs.readFileSync(__dirname + '/selfsigned.crt', 'utf-8');
+var options = {
+  key: key,
+  cert: cert
+};
 
 class MainController {
   static async sendEmail(req, res) {
@@ -51,17 +57,12 @@ class MainController {
     }
   }
 }
-var options = {
-  key: key,
-  cert: cert
-};
-var server = https.createServer(options, app);
-var key = fs.readFileSync(__dirname + '/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
 
+var server = https.createServer(options, app);
 
 server.listen(port, () => {
   console.log("server starting on port : " + port)
+  console.log(key)
 });
 app.get('/', (req, res) => {
   res.send('Now using https..');
