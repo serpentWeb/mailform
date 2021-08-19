@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const port = 443;
+const port = 3000;
 var http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -58,14 +58,14 @@ class MainController {
   }
 }
 
-var server = https.createServer(options, app);
+var server = http.createServer(options, app);
 
 server.listen(port, () => {
   console.log("server starting on port : " + port)
   console.log(key)
 });
 app.get('/', (req, res) => {
-  res.send('Now using https..');
+  res.send('Now using http..');
 });
 app.use(cors());
 app.use(express.json());
