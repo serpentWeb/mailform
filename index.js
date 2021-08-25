@@ -4,15 +4,26 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const port = 3000;
-var http = require('http');
+
 const https = require('https');
 const fs = require('fs');
-var key = fs.readFileSync(__dirname + '/selfsigned.key', 'utf-8');
-var cert = fs.readFileSync(__dirname + '/selfsigned.crt', 'utf-8');
+
+var key = fs.readFileSync(__dirname + '/selfsigned.key');
+var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
 var options = {
   key: key,
   cert: cert
 };
+
+app.get('/', (req, res) => {
+   res.send('Now using https..');
+});
+
+var server = https.createServer(options, app);
+
+server.listen(port, () => {
+  console.log("server starting on port : " + port)
+});
 
 class MainController {
   static async sendEmail(req, res) {
@@ -58,15 +69,14 @@ class MainController {
   }
 }
 
-var server = http.createServer(options, app);
-
-server.listen(port, () => {
-  console.log("server starting on port : " + port)
-  console.log(key)
-});
-app.get('/', (req, res) => {
-  res.send('Now using http..');
-});
 app.use(cors());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.use(express.json());
+app.listen(port, () =>
+  console.log(`Example app listening at http://localhost:${port}`)
+);
 app.get("/sendEmail", MainController.sendEmail);
